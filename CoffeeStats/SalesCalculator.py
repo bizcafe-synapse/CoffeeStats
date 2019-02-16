@@ -4,9 +4,15 @@ class SalesCalculator(object):
     of operation.
     """
 
-    def __init__(self):
+    def __init__(self, price: float):
         self.sales = {}
-        self.price = 4.75
+        self.price = price
+
+    def setPrice(price: float):
+        self.price = price
+
+    def getPrice() -> float:
+        return self.price
 
     def addWeek(self, week: int, cupsSold: int, hoursOpen: int):
         self.sales['Week ' + str(week)] = {
@@ -35,11 +41,5 @@ class SalesCalculator(object):
         return avg / (len(weeklyGrowth) * 1.0)
 
     @staticmethod
-    def projectSalesGivenRate(cupsPerHours: float, hours: int):
+    def projectSalesGivenRate(cupsPerHours: float, hours: int) -> int:
         return cupsPerHours * hours
-
-
-
-
-
-

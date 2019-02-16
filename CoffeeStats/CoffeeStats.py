@@ -3,42 +3,42 @@ from SalesCalculator import SalesCalculator
 import matplotlib.pyplot as plt
 
 def main():
-    # Open an Excel Workbook -> An array of sheets
+    sc = SalesCalculator(4.75)
+    
+    # Open an Excel Workbook -> Sales sheet has data about cups sold
     wb = load_workbook(filename = 'data.xlsx')
-
-    # Sales sheet has data about cups sold
     salesSheet = wb['Sales']
+    weekColumn = 'A'  # Column A in Excel
+    cupsColumn = 'B'  # Column B in Excel
+    hoursColumn = 'C' # Column C in Excel
 
-    # Parse The Weeks Column
-    sc = SalesCalculator()
-    weekColumn = 'A'
-    cupsColumn = 'B'
-    hoursColumn = 'C'
-    row = 2
+    # Parse salesSheet into SalesCalculator
+    row = 2 # row 1 contains headers, don't parse those
     while (salesSheet[weekColumn + str(row)].value is not None):
         sc.addWeek(salesSheet[weekColumn + str(row)].value,
             salesSheet[cupsColumn + str(row)].value,
             salesSheet[hoursColumn + str(row)].value)
         row += 1
 
-    # Plot Cup Sales Per Hour
-    print('Plotting cups per hour')
+    # Plot Projected Cup Sales
+    plt.xlabel('Week')
+    plt.ylabel('Cups Per Hours')
+    plt.title("Hourly Sales Projection")
+
     rates = sc.getSalesRates()
     
-    for i, rate in enumerate(rates):
+    for i, rate in enumerate(rates): # Add plot points for each week's sales
         plt.plot([i + 1], [rate], 'ro')
         plt.annotate(str(rate), (i + 1, rate))
 
-    projectedValue = rates[len(rates) - 1] + sc.projectSales()
+    projectedValue = rates[len(rates) - 1] + sc.projectSales() # projection for next week's sale
     plt.plot([len(rates) + 1], [projectedValue], 'bo')
-    plt.annotate("Projected: " + str(projectedValue), (len(rates), projectedValue))
+    plt.annotate("Projected: {:.2f}".format(projectedValue), (len(rates), projectedValue))
 
-    plt.xlabel('Week')
-    plt.ylabel('Cups Per Hours')
     plt.show()
 
+    # Project num cups sold for upcoming week
     projectedHours = eval(input("How many hours will the cafe be open next week? "))
-    print("Projected Cup Sales", sc.projectSalesGivenRate(projectedValue, projectedHours))
-
+    print("Projected Cup Sales: {:.2f}".format(sc.projectSalesGivenRate(projectedValue, projectedHours)))
 
 main()
